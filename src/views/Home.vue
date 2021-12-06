@@ -1,6 +1,6 @@
 <template>
   <div class="home container-lg">
-    <h1>Gihub Framework Watcher</h1>
+    <h1>Github Framework Watcher</h1>
     <div>
       <table class="table">
         <thead>
@@ -64,16 +64,103 @@
           </tr>
         </tbody>
       </table>
+
+      <div class="container">
+        <h3>Graph</h3>
+        <Chart :chartdata="chartData" :options="options"></Chart>
+      </div>
+      <canvas></canvas>
     </div>
   </div>
 </template>
 
 <script>
 import axios from "axios";
-
+// import VueCharts from "vue-chartjs";
+import Chart from "../views/Chart.vue";
 export default {
+  components: { Chart },
   data: function () {
     return {
+      chartData: {
+        labels: [
+          "2015-01",
+          "2015-02",
+          "2015-03",
+          "2015-04",
+          "2015-05",
+          "2015-06",
+          "2015-07",
+          "2015-08",
+          "2015-09",
+          "2015-10",
+          "2015-11",
+          "2015-12",
+        ],
+        datasets: [
+          {
+            label: "Bar Chart",
+            borderWidth: 1,
+            backgroundColor: [
+              "rgba(255, 99, 132, 0.2)",
+              "rgba(54, 162, 235, 0.2)",
+              "rgba(255, 206, 86, 0.2)",
+              "rgba(75, 192, 192, 0.2)",
+              "rgba(153, 102, 255, 0.2)",
+              "rgba(255, 159, 64, 0.2)",
+              "rgba(255, 99, 132, 0.2)",
+              "rgba(54, 162, 235, 0.2)",
+              "rgba(255, 206, 86, 0.2)",
+              "rgba(75, 192, 192, 0.2)",
+              "rgba(153, 102, 255, 0.2)",
+              "rgba(255, 159, 64, 0.2)",
+            ],
+            borderColor: [
+              "rgba(255,99,132,1)",
+              "rgba(54, 162, 235, 1)",
+              "rgba(255, 206, 86, 1)",
+              "rgba(75, 192, 192, 1)",
+              "rgba(153, 102, 255, 1)",
+              "rgba(255, 159, 64, 1)",
+              "rgba(255,99,132,1)",
+              "rgba(54, 162, 235, 1)",
+              "rgba(255, 206, 86, 1)",
+              "rgba(75, 192, 192, 1)",
+              "rgba(153, 102, 255, 1)",
+              "rgba(255, 159, 64, 1)",
+            ],
+            pointBorderColor: "#2554FF",
+            data: [12, 19, 3, 5, 2, 3, 20, 3, 5, 6, 2, 1],
+          },
+        ],
+      },
+      options: {
+        scales: {
+          yAxes: [
+            {
+              ticks: {
+                beginAtZero: true,
+              },
+              gridLines: {
+                display: true,
+              },
+            },
+          ],
+          xAxes: [
+            {
+              gridLines: {
+                display: false,
+              },
+            },
+          ],
+        },
+        legend: {
+          display: true,
+        },
+        responsive: true,
+        maintainAspectRatio: false,
+      },
+      loaded: false,
       vue: {},
       angular: {},
       ember: {},
@@ -84,7 +171,32 @@ export default {
   created: function () {
     this.getWatcherData();
   },
-  mounted: function () {},
+  mounted: function () {
+    this.renderChart({
+      labels: [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+      ],
+      datasets: [
+        {
+          label: "GitHub Commits",
+          backgroundColor: "#f87979",
+          data: [40, 20, 12, 39, 10, 40, 39, 80, 40, 20, 12, 11],
+        },
+      ],
+    }),
+      this.setChartData();
+  },
   methods: {
     getWatcherData: function () {
       axios.get("https://api.github.com/repos/vuejs/vue").then((response) => {
@@ -112,6 +224,10 @@ export default {
         this.react = response.data;
         console.log();
       });
+      this.loaded = true;
+    },
+    setChartData: function () {
+      this.props["chartData"]["data"]["data"].push(1);
     },
   },
 };
