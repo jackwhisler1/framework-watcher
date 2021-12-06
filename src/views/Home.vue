@@ -20,7 +20,7 @@
             <td>{{ this.vue["watchers"] }}</td>
             <td>{{ this.vue["subscribers_count"] }}</td>
             <td>{{ this.vue["forks"] }}</td>
-            <td>{{ parseInt((this.vue["watchers"] + this.vue["forks"] + this.vue["subscribers_count"]) / 3) }}</td>
+            <td>{{ this.vue["pop"] }}</td>
           </tr>
           <tr>
             <th scope="row">2</th>
@@ -28,9 +28,7 @@
             <td>{{ this.angular["watchers"] }}</td>
             <td>{{ this.angular["subscribers_count"] }}</td>
             <td>{{ this.angular["forks"] }}</td>
-            <td>
-              {{ parseInt((this.angular["watchers"] + this.angular["forks"] + this.angular["subscribers_count"]) / 3) }}
-            </td>
+            <td>{{ this.angular["pop"] }}</td>
           </tr>
           <tr>
             <th scope="row">3</th>
@@ -38,9 +36,7 @@
             <td>{{ this.ember["watchers"] }}</td>
             <td>{{ this.ember["subscribers_count"] }}</td>
             <td>{{ this.ember["forks"] }}</td>
-            <td>
-              {{ parseInt((this.ember["watchers"] + this.ember["forks"] + this.ember["subscribers_count"]) / 3) }}
-            </td>
+            <td>{{ this.ember["pop"] }}</td>
           </tr>
           <tr>
             <th scope="row">4</th>
@@ -48,9 +44,7 @@
             <td>{{ this.svelte["watchers"] }}</td>
             <td>{{ this.svelte["subscribers_count"] }}</td>
             <td>{{ this.svelte["forks"] }}</td>
-            <td>
-              {{ parseInt((this.svelte["watchers"] + this.svelte["forks"] + this.svelte["subscribers_count"]) / 3) }}
-            </td>
+            <td>{{ this.svelte["pop"] }}</td>
           </tr>
           <tr>
             <th scope="row">5</th>
@@ -58,9 +52,7 @@
             <td>{{ this.react["watchers"] }}</td>
             <td>{{ this.react["subscribers_count"] }}</td>
             <td>{{ this.react["forks"] }}</td>
-            <td>
-              {{ parseInt((this.react["watchers"] + this.react["forks"] + this.react["subscribers_count"]) / 3) }}
-            </td>
+            <td>{{ this.react["pop"] }}</td>
           </tr>
         </tbody>
       </table>
@@ -69,7 +61,6 @@
         <h3>Graph</h3>
         <bar-chart v-if="loaded" :chartData="chartData" :options="options" />
       </div>
-      <canvas></canvas>
     </div>
   </div>
 </template>
@@ -111,6 +102,7 @@ export default {
         maintainAspectRatio: false,
       },
       loaded: false,
+      test: "hello",
       vue: {},
       angular: {},
       ember: {},
@@ -118,81 +110,146 @@ export default {
       react: {},
     };
   },
-  created: function () {
+  created: function () {},
+  mounted: async function () {
     this.getWatcherData();
-  },
-  mounted: function () {
-    this.setChartData();
   },
   methods: {
     getWatcherData: function () {
       axios.get("https://api.github.com/repos/vuejs/vue").then((response) => {
-        console.log(response.data);
         this.vue = response.data;
-        console.log();
+        this.vue["pop"] = parseInt((this.vue["watchers"] + this.vue["forks"] + this.vue["subscribers_count"]) / 3);
       });
       axios.get("https://api.github.com/repos/angular/angular.js").then((response) => {
-        console.log(response.data);
         this.angular = response.data;
-        console.log();
+        this.angular["pop"] = parseInt(
+          (this.angular["watchers"] + this.angular["forks"] + this.angular["subscribers_count"]) / 3
+        );
       });
       axios.get("https://api.github.com/repos/emberjs/ember.js").then((response) => {
-        console.log(response.data);
         this.ember = response.data;
-        console.log();
+        this.ember["pop"] = parseInt(
+          (this.ember["watchers"] + this.ember["forks"] + this.ember["subscribers_count"]) / 3
+        );
       });
       axios.get("https://api.github.com/repos/sveltejs/svelte").then((response) => {
-        console.log(response.data);
         this.svelte = response.data;
-        console.log();
+        this.svelte["pop"] = parseInt(
+          (this.svelte["watchers"] + this.svelte["forks"] + this.svelte["subscribers_count"]) / 3
+        );
       });
-      axios.get("https://api.github.com/repos/facebook/react").then((response) => {
-        console.log(response.data);
-        this.react = response.data;
-        console.log();
-      });
+      axios
+        .get("https://api.github.com/repos/facebook/react")
+        .then((response) => {
+          this.react = response.data;
+          this.react["pop"] = parseInt(
+            (this.react["watchers"] + this.react["forks"] + this.react["subscribers_count"]) / 3
+          );
+          this.setChartData();
+        })
+        .then();
+      console.log("calls done");
+      this.test = "goodbye";
     },
     setChartData: function () {
       this.chartData = {
         labels: ["Stars", "Watchers", "Forks", "Popularity"],
         datasets: [
           {
-            label: "Bar Chart",
+            label: "Vue",
             borderWidth: 1,
             backgroundColor: [
               "rgba(255, 99, 132, 0.2)",
-              "rgba(54, 162, 235, 0.2)",
-              "rgba(255, 206, 86, 0.2)",
-              "rgba(75, 192, 192, 0.2)",
-              "rgba(153, 102, 255, 0.2)",
-              "rgba(255, 159, 64, 0.2)",
               "rgba(255, 99, 132, 0.2)",
+              "rgba(255, 99, 132, 0.2)",
+              "rgba(255, 99, 132, 0.2)",
+            ],
+            borderColor: ["rgba(255,99,132,1)", "rgba(255,99,132,1)", "rgba(255,99,132,1)", "rgba(255,99,132,1)"],
+            pointBorderColor: "#2554FF",
+            data: [this.vue["watchers"], this.vue["forks"], this.vue["subscribers_count"], this.vue["pop"]],
+          },
+          {
+            label: "Angular",
+            borderWidth: 1,
+            backgroundColor: [
               "rgba(54, 162, 235, 0.2)",
-              "rgba(255, 206, 86, 0.2)",
-              "rgba(75, 192, 192, 0.2)",
-              "rgba(153, 102, 255, 0.2)",
-              "rgba(255, 159, 64, 0.2)",
+              "rgba(54, 162, 235, 0.2)",
+              "rgba(54, 162, 235, 0.2)",
+              "rgba(54, 162, 235, 0.2)",
             ],
             borderColor: [
-              "rgba(255,99,132,1)",
               "rgba(54, 162, 235, 1)",
-              "rgba(255, 206, 86, 1)",
-              "rgba(75, 192, 192, 1)",
-              "rgba(153, 102, 255, 1)",
-              "rgba(255, 159, 64, 1)",
-              "rgba(255,99,132,1)",
               "rgba(54, 162, 235, 1)",
+              "rgba(54, 162, 235, 1)",
+              "rgba(54, 162, 235, 1)",
+            ],
+            pointBorderColor: "blue",
+            data: [
+              this.angular["watchers"],
+              this.angular["forks"],
+              this.angular["subscribers_count"],
+              this.angular["pop"],
+            ],
+          },
+          {
+            label: "Ember",
+            borderWidth: 1,
+            backgroundColor: [
+              "rgba(255, 206, 86, 0.2)",
+              "rgba(255, 206, 86, 0.2)",
+              "rgba(255, 206, 86, 0.2)",
+              "rgba(255, 206, 86, 0.2)",
+            ],
+            borderColor: [
               "rgba(255, 206, 86, 1)",
-              "rgba(75, 192, 192, 1)",
-              "rgba(153, 102, 255, 1)",
-              "rgba(255, 159, 64, 1)",
+              "rgba(255, 206, 86, 1)",
+              "rgba(255, 206, 86, 1)",
+              "rgba(255, 206, 86, 1)",
             ],
             pointBorderColor: "#2554FF",
-            data: [15, 15, 15, 20, 19, 3, 5, 2, 3, 20, 3, 5, 6, 2, 1],
+            data: [this.ember["watchers"], this.ember["forks"], this.ember["subscribers_count"], this.ember["pop"]],
+          },
+          {
+            label: "Svelte",
+            borderWidth: 1,
+            backgroundColor: [
+              "rgba(75, 192, 192, 0.2)",
+              "rgba(75, 192, 192, 0.2)",
+              "rgba(75, 192, 192, 0.2)",
+              "rgba(75, 192, 192, 0.2)",
+            ],
+            borderColor: [
+              "rgba(75, 192, 192, 1)",
+              "rgba(75, 192, 192, 1)",
+              "rgba(75, 192, 192, 1)",
+              "rgba(75, 192, 192, 1)",
+            ],
+            pointBorderColor: "#2554FF",
+            data: [this.svelte["watchers"], this.svelte["forks"], this.svelte["subscribers_count"], this.svelte["pop"]],
+          },
+          {
+            label: "React",
+            borderWidth: 1,
+            backgroundColor: [
+              "rgba(153, 102, 255, 0.2)",
+              "rgba(153, 102, 255, 0.2)",
+              "rgba(153, 102, 255, 0.2)",
+              "rgba(153, 102, 255, 0.2)",
+            ],
+            borderColor: [
+              "rgba(153, 102, 255, 1)",
+              "rgba(153, 102, 255, 1)",
+              "rgba(153, 102, 255, 1)",
+              "rgba(153, 102, 255, 1)",
+            ],
+            pointBorderColor: "#2554FF",
+            data: [this.react["watchers"], this.react["forks"], this.react["subscribers_count"], this.react["pop"]],
           },
         ],
       };
       this.loaded = true;
+      console.log(this.vue);
+      console.log(this.react["watchers"]);
     },
   },
 };
