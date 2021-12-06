@@ -1,5 +1,5 @@
 <template>
-  <div class="home container-lg">
+  <div class="home container-lg mt-5">
     <h1>Github Framework Watcher</h1>
     <div>
       <table class="table">
