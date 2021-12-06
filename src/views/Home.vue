@@ -65,9 +65,9 @@
         </tbody>
       </table>
 
-      <div class="container">
+      <div v-if="loaded" class="container">
         <h3>Graph</h3>
-        <Chart :chartdata="chartData" :options="options"></Chart>
+        <Chart :data="chartData" :options="options"></Chart>
       </div>
       <canvas></canvas>
     </div>
@@ -172,30 +172,7 @@ export default {
     this.getWatcherData();
   },
   mounted: function () {
-    this.renderChart({
-      labels: [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December",
-      ],
-      datasets: [
-        {
-          label: "GitHub Commits",
-          backgroundColor: "#f87979",
-          data: [40, 20, 12, 39, 10, 40, 39, 80, 40, 20, 12, 11],
-        },
-      ],
-    }),
-      this.setChartData();
+    this.setChartData();
   },
   methods: {
     getWatcherData: function () {
@@ -227,7 +204,33 @@ export default {
       this.loaded = true;
     },
     setChartData: function () {
-      this.props["chartData"]["data"]["data"].push(1);
+      this.chartData = {
+        labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+        datasets: [
+          {
+            label: "# of Votes",
+            data: [12, 19, 3, 5, 2, 3],
+            backgroundColor: [
+              "rgba(255, 99, 132, 0.2)",
+              "rgba(54, 162, 235, 0.2)",
+              "rgba(255, 206, 86, 0.2)",
+              "rgba(75, 192, 192, 0.2)",
+              "rgba(153, 102, 255, 0.2)",
+              "rgba(255, 159, 64, 0.2)",
+            ],
+            borderColor: [
+              "rgba(255, 99, 132, 1)",
+              "rgba(54, 162, 235, 1)",
+              "rgba(255, 206, 86, 1)",
+              "rgba(75, 192, 192, 1)",
+              "rgba(153, 102, 255, 1)",
+              "rgba(255, 159, 64, 1)",
+            ],
+            borderWidth: 1,
+          },
+        ],
+      };
+      this.loaded = true;
     },
   },
 };
