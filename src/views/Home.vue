@@ -58,7 +58,6 @@
       </table>
 
       <div v-if="loaded" class="container">
-        <h3>Graph</h3>
         <bar-chart v-if="loaded" :chartData="chartData" :options="options" />
       </div>
     </div>
