@@ -118,6 +118,7 @@ export default {
       axios.get("https://api.github.com/repos/vuejs/vue").then((response) => {
         this.vue = response.data;
         this.vue["pop"] = parseInt((this.vue["watchers"] + this.vue["forks"] + this.vue["subscribers_count"]) / 3);
+        this.setChartData();
       });
       axios.get("https://api.github.com/repos/angular/angular.js").then((response) => {
         this.angular = response.data;
@@ -152,7 +153,6 @@ export default {
     },
     setChartData: function () {
       this.chartData = {
-        labels: ["Stars", "Watchers", "Forks", "Popularity"],
         datasets: [
           {
             label: "Vue",
@@ -245,6 +245,7 @@ export default {
             data: [this.react["watchers"], this.react["forks"], this.react["subscribers_count"], this.react["pop"]],
           },
         ],
+        labels: ["Stars", "Watchers", "Forks", "Popularity"],
       };
       this.loaded = true;
       console.log(this.vue);
