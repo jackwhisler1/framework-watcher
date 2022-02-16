@@ -96,6 +96,7 @@ export default {
         },
         legend: {
           display: true,
+          position: "bottom",
         },
         responsive: true,
         maintainAspectRatio: false,
@@ -109,16 +110,15 @@ export default {
       react: {},
     };
   },
-  created: function () {},
-  mounted: async function () {
+  created: function () {
     this.getWatcherData();
   },
+  mounted: async function () {},
   methods: {
     getWatcherData: function () {
       axios.get("https://api.github.com/repos/vuejs/vue").then((response) => {
         this.vue = response.data;
         this.vue["pop"] = parseInt((this.vue["watchers"] + this.vue["forks"] + this.vue["subscribers_count"]) / 3);
-        this.setChartData();
       });
       axios.get("https://api.github.com/repos/angular/angular.js").then((response) => {
         this.angular = response.data;
@@ -138,18 +138,13 @@ export default {
           (this.svelte["watchers"] + this.svelte["forks"] + this.svelte["subscribers_count"]) / 3
         );
       });
-      axios
-        .get("https://api.github.com/repos/facebook/react")
-        .then((response) => {
-          this.react = response.data;
-          this.react["pop"] = parseInt(
-            (this.react["watchers"] + this.react["forks"] + this.react["subscribers_count"]) / 3
-          );
-          this.setChartData();
-        })
-        .then();
-      console.log("calls done");
-      this.test = "goodbye";
+      axios.get("https://api.github.com/repos/facebook/react").then((response) => {
+        this.react = response.data;
+        this.react["pop"] = parseInt(
+          (this.react["watchers"] + this.react["forks"] + this.react["subscribers_count"]) / 3
+        );
+        this.setChartData();
+      });
     },
     setChartData: function () {
       this.chartData = {
